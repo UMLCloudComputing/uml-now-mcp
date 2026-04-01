@@ -5,7 +5,7 @@ This module contains the CLI for the search command. This command is used to cre
 abstraction for the both the UML Now API and the UML Catalog API.
 """
 
-from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 import requests 
 import time
@@ -16,17 +16,17 @@ from .course import Course
 
 
 # Return html from a rendered webpage
-def get_html(url):
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        page.goto(url, wait_until="networkidle")
-        html = page.content()
-        browser.close()
+async def get_html(url):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.goto(url, wait_until="networkidle")
+        html = await page.content()
+        await browser.close()
     return html
 
 # Return a total list of classes from a department
-def get_courses_by_department_prefix(department, parse=False, debug=False):
+async def get_courses_by_department_prefix(department, parse=False, debug=False):
     """Return a total list of classes from a department."""
 
     # Output
@@ -39,7 +39,7 @@ def get_courses_by_department_prefix(department, parse=False, debug=False):
     url = f"https://www.uml.edu/Catalog/Advanced-Search.aspx?prefix={department}&type=prefix"
    
     # Get the html response
-    html = get_html(url)
+    html = await get_html(url)
     soup = BeautifulSoup(html, "lxml")
 
     # Extract course elements from the rendered html page
