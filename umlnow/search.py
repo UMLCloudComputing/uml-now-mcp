@@ -9,6 +9,7 @@ from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 import requests 
 import time
+import asyncio
 
 from .data import DEPARTMENT_PREFIXES
 from .course import Course
@@ -19,7 +20,7 @@ def get_html(url):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        page.goto(url)
+        page.goto(url, wait_until="networkidle")
         html = page.content()
         browser.close()
     return html
@@ -27,7 +28,7 @@ def get_html(url):
 # Return a total list of classes from a department
 def get_courses_by_department_prefix(department, parse=False, debug=False):
     """Return a total list of classes from a department."""
-    
+
     # Output
     OUTPUT = {
         'total': 0,
@@ -35,15 +36,16 @@ def get_courses_by_department_prefix(department, parse=False, debug=False):
     }
     
     # Create the url
-    url = f"https://www.uml.edu/catalog/advance-search.aspx?prefix={department}&type=prefix"
-    
+    url = f"https://www.uml.edu/Catalog/Advanced-Search.aspx?prefix={department}&type=prefix"
+   
     # Get the html response
     html = get_html(url)
-    soup = BeautifulSoup(html, "html.parser")
-    
+    soup = BeautifulSoup(html, "lxml")
+
     # Extract course elements from the rendered html page
     elements = soup.select(".cxpccT")
-    
+    print(f"- Found {len(elements)} course elements") if debug else None
+
     # For each element, extract the course number, name, and description
     for element in elements:
         
@@ -67,8 +69,12 @@ def get_courses_by_department_prefix(department, parse=False, debug=False):
                 "number": spans[1].text,
                 "name": spans[2].text,
                 "id": spans[5].text,
-                # "credits": spans[8].text, # why does this not work?
             }
+            if spans[7].text == "Credits Min:":
+              OUTPUT[course_prefix]["credits_min"] = spans[8].text
+              OUTPUT[course_prefix]["credits_max"] = spans[11].text
+            elif spans[7].text == "Credits:":
+              OUTPUT[course_prefix]["credits"] = spans[8].text
             
     # Return the output
     OUTPUT['time'] = time.time() - OUTPUT['time']
@@ -133,4 +139,3 @@ class Search(object):
         """Search degree pathways."""
         return "Sorry, not implemented yet."
     
-        
