@@ -50,7 +50,7 @@ def get_course_description(response: requests.models.Response):
     """Returns the course description as a string from a html response."""
     try:
         soup = BeautifulSoup(response.content, "html.parser")
-        html = soup.select("p:nth-child(5)")[0]
+        html = soup.select("div.comp-generic-content > p")[0]
         return html.text
     except:
         return ""
@@ -59,7 +59,7 @@ def get_course_id(response: requests.models.Response):
     """Returns the course id as a string from a html response."""
     try: 
         soup = BeautifulSoup(response.content, "html.parser")
-        course_id = soup.select(".outline:nth-child(1)")[0].text
+        course_id = soup.select(".outline")[0].text
         
         # Sanitize
         if "id:" in course_id.lower(): course_id = course_id.split("Id: ")[1]
@@ -74,12 +74,8 @@ def get_course_credits(response: requests.models.Response):
     """Returns the course credits as a dict from a html response."""
     try: 
         soup = BeautifulSoup(response.content, "html.parser")
-        min_credits = soup.select(".outline:nth-child(2)")[0].text
-        max_credits = soup.select(".outline:nth-child(3)")[0].text
-        
-        # Sanitize
-        if 'credits' in min_credits.lower(): min_credits = min_credits.split("Credits Min: ")[1]
-        if 'credits' in max_credits.lower(): max_credits = max_credits.split("Credits Max: ")[1]
+        data = soup.select(".outline")[1].text.split('-')
+        min_credits, max_credits = data[0][-1], data[1][0]
         
         # Return
         return {
@@ -97,8 +93,7 @@ def get_course_requirements_text(response: requests.models.Response):
     """Returns the course requirements as a string from a html response."""
     try:
         soup = BeautifulSoup(response.content, "html.parser")
-        html = soup.select("p:nth-child(7)")[0]
-        return html.text
+        return soup.select("div.comp-generic-content > p")[1].text
     except:
         return ""
     
@@ -227,7 +222,7 @@ def Course(course, **kwargs):
     if not response: return {'error': "Course does not exist."}
 
     requirements_text = get_course_requirements_text(response)
-    parsed_requirements = get_course_requirements_dict(requirements_text)
+  # parsed_requirements = get_course_requirements_dict(requirements_text)
     course_name = get_course_name(response)
     course_description = get_course_description(response)
     course_id = get_course_id(response)
@@ -251,10 +246,12 @@ def Course(course, **kwargs):
     if kwargs.get('credits'): 
       response['credits'] = course_credits
       none_set = False
-   #if kwargs.get('requirements_text'): response['requirements-text'] = requirements_text
-    if kwargs.get('requirements'): 
-      response['requirements'] = parsed_requirements
+    if kwargs.get('requirements_text'): 
+      response['requirements-text'] = requirements_text
       none_set = False
+    # if kwargs.get('requirements'): 
+    #   response['requirements'] = parsed_requirements
+    #   none_set = False
 
     # Otherwise, return all results
     if none_set:
@@ -264,8 +261,8 @@ def Course(course, **kwargs):
           'id': course_id,
           'description': course_description,
           'credits': course_credits,
-      #   'requirements-text': requirements_text,
-          'requirements': parsed_requirements,
+          'requirements-text': requirements_text,
+      #    'requirements': parsed_requirements, 
       }
    
     return response
