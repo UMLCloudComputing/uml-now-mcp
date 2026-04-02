@@ -16,6 +16,10 @@ RUN uv sync
 # Copy the umlnow code
 ADD umlnow/ ./umlnow
 
+# Install Playwright browser and OS-level system dependencies
+# Must run as root to install system libraries
+RUN uv run playwright install  --with-deps --only-shell chromium
+
 # Copy the server code
 COPY server.py .
 
