@@ -14,7 +14,7 @@ The MCP server can be used locally by either
 > [!NOTE]
 > If you're using the MCP Inspector tool for local development, uml-now-mcp uses the Streamable HTTP transport, not STDIO or server-sent events (SSE). 
 
-For production deployments on kubernetes refer to the example manifest, `k8s_example.yaml`.
+For production deployments on kubernetes check the reference manifest, `kubernetes_prod.yaml`.
 
 ## Technologies
 - Docker
