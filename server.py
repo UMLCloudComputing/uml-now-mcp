@@ -62,7 +62,7 @@ async def search_by_course_title(course_title: Annotated[str, "The course title 
                                             ge=1, le=10)] 
                                          = 3) -> dict:
   """
-  Search for course ID, name, and description using a course title
+  Search for course ID, name, url, description, credits, and requirements using a course title
   """
   await ctx.info("Called `search_by_course_title`")
   url = f"https://www.uml.edu/Catalog/Advanced-Search.aspx?title={course_title}&type=title" 
