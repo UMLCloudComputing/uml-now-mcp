@@ -41,7 +41,10 @@ spec:
   selector:
     pod: uml-now-mcp
   internalTrafficPolicy: Cluster
-  SessionAffinity: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800 # 3 Hours
   ipFamilies:
     - IPv4
   ipFamilyPolicy: SingleStack
