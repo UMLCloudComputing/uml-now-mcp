@@ -25,6 +25,11 @@ async def app_lifespan(server):
 
 mcp_server = FastMCP("UML-NOW-MCP-Server", lifespan=app_lifespan)
 
+@mcp_server.route("/health")
+async def health_check(request):
+  # Add pre-flight checks here, none at the moment
+  return JSONResponse({"status": "ok", "service": "uml-now-mcp"}, status_code=200)
+
 # DONE
 @mcp_server.tool
 async def get_course_info_from_course_id(course_id: Annotated[str, "Required Course ID"], 
