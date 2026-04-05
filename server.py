@@ -7,7 +7,7 @@ from fastmcp import FastMCP
 from fastmcp.server.lifespan import lifespan
 from fastmcp.dependencies import CurrentContext
 from fastmcp.server.context import Context
-from umlnow import Course, API, parse_catalog_courses_response
+from umlnow import Course, API, parse_catalog_courses_response, get_subject_prefix_mapping
 
 # Configuration
 BROADCAST_ADDRESS = os.getenv("BROADCAST_ADDRESS", "127.0.0.1")
@@ -62,18 +62,20 @@ async def search_by_course_title(course_title: Annotated[str, "The course title 
                                             ge=1, le=10)] 
                                          = 3) -> dict:
   """
-  Search for course ID, name, url, description, credits, and requirements using a course title
+  Search for course ID, name, url, description, credits, and requirements by the course title
   """
   await ctx.info("Called `search_by_course_title`")
   url = f"https://www.uml.edu/Catalog/Advanced-Search.aspx?title={course_title}&type=title" 
   result = await parse_catalog_courses_response(url=url, structured=True, top_k=top_k)
   return result
 
+@mcp_server.tool
 async def get_all_subject_prefixes(ctx: Context = CurrentContext()) -> dict:
   """ 
   Obtain the exhaustive mapping of subject names to their prefixes 
   """
-  pass  
+  await ctx.info("Called `get_all_subject_prefixes`")
+  return get_subject_prefix_mapping() 
 
 if __name__ == "__main__":
   mcp_server.run(transport="streamable-http", host=BROADCAST_ADDRESS, port=8000)

@@ -9,7 +9,7 @@ import json
 import functools
 
 # Local
-from .data import DEPARTMENT_PREFIXES
+from .data import SUBJECT_PREFIXES_RAW
 from .api import API
 
 
@@ -116,7 +116,7 @@ def extract_courses_from_str(text: str):
         for index, item in enumerate(requirement_list):
             
             # If item is a course prefix, append to output
-            if item.lower() in [prefix.lower() for prefix in DEPARTMENT_PREFIXES]:
+            if item.lower() in [prefix.lower() for prefix in SUBJECT_PREFIXES_RAW]:
                 
                 # Make sure the next element in list exists, otherwise this is is not a valid course prefix
                 if index + 1 < len(requirement_list):

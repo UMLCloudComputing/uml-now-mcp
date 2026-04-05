@@ -1,16 +1,7 @@
 # Data vault
 
-# Departments
-class DEPARTMENT_CODES:
-    ACCOUNTING = "LACCOUNT"
-    AMERICAN_STUDIES = "LAMERSTDY"
-    ART_AND_DESIGN = "LAESTCRSTY|LFINEARTS|LSTUDIOART"
-    ART_HISTORY = "LARTHISTRY"
-    BIOLOGY = "LBIOLOGY"
-    # BIOMEDICAL_AND_NUTRICIAN
-
-# Course Prefixes 
-DEPARTMENT_PREFIXES = [
+# Subject Prefixes unmapped
+SUBJECT_PREFIXES_RAW = [
     "ACCT",
     "AERO",
     "AEST",
@@ -121,20 +112,113 @@ DEPARTMENT_PREFIXES = [
     "WORC",
 ]
 
-# College Suffixes
-class COLLEGE_CODES:
-    COLLEGE_EDUCATION = "EDGR"
-    COLLEGE_ENGINEERING = "EN"
-    COLLEGE_ARTS = "A&S"
-    COLLEGE_HEALTH = "HP"
-    COLLEGE_SCIENCES = "SCI"
-    COLLEGE_BUSINESS = "MG"
 
-COLLEGES = {
-    COLLEGE_CODES.COLLEGE_EDUCATION: "College of Education",
-    COLLEGE_CODES.COLLEGE_ENGINEERING: "Francis College of Engineering",
-    COLLEGE_CODES.COLLEGE_ARTS: "College of Fine Arts, Humanities, and Social Sciences",
-    COLLEGE_CODES.COLLEGE_HEALTH: "Zuckerberg College of Health Sciences",
-    COLLEGE_CODES.COLLEGE_SCIENCES: "Kennedy College of Sciences",
-    COLLEGE_CODES.COLLEGE_BUSINESS: "Manning School of Business",
+# Subject Prefixes 
+SUBJECT_PREFIXES = {
+    "Accounting": "ACCT",
+    "Art: Aesthetics and Critical Studies": "AEST",
+    "UMass Amherst Intercampus Course": "AMHE",
+    "American Studies": "AMST",
+    "Architectural Studies": "ARCH",
+    "Art History": "ARHI",
+    "Art and Design": "ARTS",
+    "Asian American Studies": "ASAM",
+    "Atmospheric Science": "ATMO",
+    "Biological Sciences": "BIOL",
+    "Biomedical Engineering": ["BMBT", "BMEN"],
+    "Applied Biomedical Sciences": "BMSC",
+    "Boston": "BOST",
+    "Intercollegiate Business": "BUSI",
+    "Chemistry": "CHEM",
+    "Chemical Engineering": "CHEN",
+    "Civil & Environmental Engineering": "CIVE",
+    "Computer Science": ["COMP", "MSIT"],
+    "Continued Matriculation": "CONT",
+    "Core Curriculum": "CORE",
+    "School of Criminology": "CRIM",
+    "UMass Dartmouth Intercampus Course": "DART",
+    "Digital Media": "DGMD",
+    "Physical Therapy and Kinesiology": "DPTH",
+    "Economics": "ECON",
+    "Education": "EDUC",
+    "Electrical & Computer Engineering": "EECE",
+    "English": "ENGL",
+    "Intercollegiate Engineering": "ENGN",
+    "Nuclear & Energy Engineering": "ENGY",
+    "Entrepreneurship": "ENTR",
+    "Environmental Engineering": "ENVE",
+    "Environmental Science": "ENVI",
+    "Environmental Studies": "ENVS",
+    "Electrical Engineering Technology": "ETEC",
+    "Exercise Science": "EXER",
+    "Intercollegiate FAHSS": "FAHS",
+    "Finance": "FINA",
+    "Geoscience": "GEOL",
+    "Global Studies": "GLST",
+    "Gender Studies": "GNDR",
+    "Graphic Design": "GRFX",
+    "History": "HIST",
+    "Honors College": "HONR",
+    "Intercollegiate Health Science": "HSCI",
+    "Industrial Engineering": "IENG",
+    "Graduate Research": "IM",
+    "Information Technology": "INFO",
+    "Labor Studies": "LABR",
+    "Legal Studies": "LGST",
+    "Biology: Life Science": "LIFE",
+    "Intercampus Marine Sciences": "MARI",
+    "Mathematics": "MATH",
+    "Mechanical Engineering": "MECH",
+    "Management": "MGMT",
+    "Operations & Information Systems": "MIST",
+    "Marketing": "MKTG",
+    "Medical Lab Sciences": "MLSC",
+    "Public Administration": "MPAD",
+    "Mechanical Engineering Technology": "MTEC",
+    "Music: Applied Music": "MUAP",
+    "Music Business": "MUBU",
+    "Music Composition": ["MUCM", "LMUCM"],
+    "Music Education": "MUED",
+    "Music Ensembles": "MUEN",
+    "Music History": "MUHI",
+    "Music Performance": "MUPF",
+    "Music: Sound Recording Technology": "MUSR",
+    "Music Theory": "MUTH",
+    "School of Nursing": "NURS",
+    "Nutritional Science": "NUTR",
+    "Peace and Conflict Studies": "PCST",
+    "Philosophy": "PHIL",
+    "Pharmaceutical Sciences": "PHRM",
+    "Physics": "PHYS",
+    "Plastics Engineering": "PLAS",
+    "Political Science": "POLI",
+    "Polymer Science": "POLY",
+    "Operations & Information Systems": "POMS",
+    "Professional Science Master": "PSMA",
+    "Psychology": "PSYC",
+    "Plastics Technology": "PTEC",
+    "Public Health": "PUBH",
+    "Radiological Sciences": "RADI",
+    "Army ROTC": "ROTC",
+    "Intercollegiate Sciences": "SCIE",
+    "Sociology": "SOCI",
+    "Theater Arts": "THEA",
+    "Undergraduate Transfer Credit": "UGTC",
+    "UMass Lowell": "UMLO",
+    "University Credit": "UNCR",
+    "Education: UTEACH": "UTCH",
+    "World Languages": "WLAN",
+    "World Languages: Arabic": "WLAR",
+    "World Languages: Chinese": "WLCH",
+    "World Languages: French": "WLFR",
+    "World Languages: German": "WLGE",
+    "World Languages: Italian": "WLIT",
+    "World Languages: Cambodian": "WLKH",
+    "World Languages: Latin": "WLLA",
+    "World Languages: Portuguese": "WLPO",
+    "World Languages: Spanish": "WLSP",
+    "UMass Worcester Intercampus Course": "WORC",
 }
+
+def get_subject_prefix_mapping() -> dict:
+  return SUBJECT_PREFIXES

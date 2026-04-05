@@ -11,7 +11,7 @@ import requests
 import time
 import asyncio
 
-from .data import DEPARTMENT_PREFIXES
+from .data import SUBJECT_PREFIXES_RAW
 from .course import Course
 
 
