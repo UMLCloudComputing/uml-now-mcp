@@ -89,4 +89,51 @@ For production deployments on kubernetes check the reference manifest, `k8s/kube
         </td>
         <td>Each object's key is the course ID. Each value is a Course dictionary object.</td>
     </tr>
+    <tr>
+      <td><code>search_by_course_title</code></td>
+      <td>Search for course id, name, url, descriptions, credits information, and requirements by the course title.</td>
+      <td>
+        <pre><code>
+        ... (course_title: str,
+              top_k: int)
+        </code></pre>
+      </td>
+      <td>
+        <pre><code>
+        {
+            str: {
+                name: str 
+                url: str
+                id: str
+                description: str
+                credits: {
+                    min: str
+                    max: str
+                }
+                requirements-text: str
+            }
+            ...
+        }
+        </code></pre>
+      </td>
+      <td>Each object's key is the course ID. Each value is the Course dictionary object.</td>
+    </tr>
+    <tr>
+      <td><code>get_all_subject_prefixes</code></tr>
+      <td>Obtain the exhuastive mapping of subject names to their prefixes</td>
+      <td>
+        <pre><code>
+        ... ()
+        </code></pre>
+      </td>
+      <td>
+        <pre><code>
+        {
+          str: str|list[str],
+          ...
+        }
+        </code></pre>
+      </td>
+      <td>The key is the course title/name and the value is the prefix or list of prefixes.</td>
+    </tr>
 </table>
