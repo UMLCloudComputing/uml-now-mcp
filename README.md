@@ -119,7 +119,7 @@ For production deployments on kubernetes check the reference manifest, `k8s/kube
       <td>Each object's key is the course ID. Each value is the Course dictionary object.</td>
     </tr>
     <tr>
-      <td><code>get_all_subject_prefixes</code></tr>
+      <td><code>get_all_subject_prefixes</code></td>
       <td>Obtain the exhuastive mapping of subject names to their prefixes</td>
       <td>
         <pre><code>
