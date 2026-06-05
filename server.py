@@ -65,7 +65,7 @@ async def search_by_course_title(course_title: Annotated[str, "The course title 
                                   ctx: Context = CurrentContext(),
                                   top_k: Annotated[int, 
                                           Field(
-                                            description="The number of top relavent courses to receive in the response. Set to -1 to get all courses.", 
+                                            description="The number of top relavent courses to receive in the response. Set to -1 to get all courses. The maximum allowed value is 10.", 
                                             ge=-1, le=10)] 
                                          = 3) -> dict:
   """
