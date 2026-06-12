@@ -2,19 +2,19 @@
 FROM ghcr.io/astral-sh/uv:debian-slim
 
 # Set working directory
-WORKDIR /app
+WORKDIR /umlnow
 
 # Install system dependencies (needed for some vector math libs)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+  build-essential \
+  && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install
 COPY pyproject.toml .
 RUN uv sync
 
 # Copy the umlnow code
-ADD umlnow/ ./umlnow
+COPY umlnow/ ./umlnow
 
 # Install Playwright browser and OS-level system dependencies
 # Must run as root to install system libraries
