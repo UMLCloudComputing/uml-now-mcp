@@ -1,0 +1,13 @@
+services:
+  uml-now-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uml-now-mcp-server
+    network_mode: "host"
+    restart: on-failure
+  prometheus: 
+    image: prom/prometheus
+    network_mode: "host"
+    volumes:
+      - "./prometheus.yaml:/etc/prometheus/prometheus.yml"
