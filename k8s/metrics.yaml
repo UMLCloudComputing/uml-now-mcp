@@ -1,5 +1,5 @@
 # Prometheus ServiceMonitor to get application metrics
-apiVersion: v1
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: uml-now-mcp-monitor
