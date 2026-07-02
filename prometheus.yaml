@@ -1,7 +1,7 @@
 global:
   scrape_interval: 2s
 
-scrape_config:
+scrape_configs:
   - job_name: "uml-now-mcp-server"
     static_configs:
       - targets: ['localhost:8000']

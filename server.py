@@ -1,14 +1,23 @@
 # server.py
 
 import os
+import time
 from typing import Optional, Annotated
 from pydantic import Field
+
+import functools
+import inspect
+
 from fastmcp import FastMCP
 from fastmcp.server.lifespan import lifespan
 from fastmcp.dependencies import CurrentContext
 from fastmcp.server.context import Context
+
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST, Counter, Histogram
+
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
+
 from umlnow import (
     Course,
     API,
@@ -18,6 +27,60 @@ from umlnow import (
 
 # Configuration
 BROADCAST_ADDRESS = os.getenv("BROADCAST_ADDRESS", "127.0.0.1")
+
+
+# Proemtheus metrics
+TOOL_CALLS_TOTAL = Counter(
+    "uml_now_mcp_tool_calls_total",
+    "Total number of MCP tool calls for uml-now-mcp",
+    labelnames=["tool_name", "status"],
+)
+TOOL_EXECUTION_TIME = Histogram(
+    "uml_now_mcp_tool_execution_seconds",
+    "Time spent executing an MCP tool in seconds for uml-now-mcp",
+    buckets=(0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0, 10.0, float("inf")),
+)
+
+
+# Custom decorator for Prometheus
+def monitor_tool(func):
+    """
+    A decorator to measure tool execution times and log metrics to Proemtheus.
+    Supports both standard sync and async functions automatically.
+    """
+    tool_name = func.__name__
+
+    @functools.wraps(func)
+    async def async_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        status = "success"
+        try:
+            return await func(*args, **kwargs)
+        except Exception:
+            status = "failure"
+            raise
+        finally:
+            duration = time.perf_counter() - start_time
+            TOOL_EXECUTION_TIME.labels(tool_name=tool_name, status=status).observe(
+                duration
+            )
+            TOOL_CALLS_TOTAL.labels(tool_name=tool_name, status=status).inc()
+
+    @functools.wraps(func)
+    def sync_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        status = "success"
+        try:
+            return func(*args, **kwargs)
+        except Exception:
+            status = "failure"
+            raise
+        finally:
+            duration = time.perf_counter() - start_time
+            TOOL_EXECUTION_TIME.labels(tool_name, status).observe(duration)
+            TOOL_CALLS_TOTAL.labels(tool_name=tool_name, status=status).inc()
+
+    return async_wrapper if inspect.iscoroutinefunction(func) else sync_wrapper
 
 
 @lifespan
@@ -40,8 +103,14 @@ async def health_check(request: Request) -> JSONResponse:
     return JSONResponse({"status": "ok", "service": "uml-now-mcp"}, status_code=200)
 
 
+@mcp_server.custom_route("/metrics", methods=["GET"])
+async def metrics(request: Request) -> Response:
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+
 # DONE
 @mcp_server.tool
+@monitor_tool
 async def get_course_info_from_course_id(
     course_id: Annotated[str, "Required Course ID"],
     ctx: Context = CurrentContext(),
@@ -81,6 +150,7 @@ async def get_course_info_from_course_id(
 
 # DONE
 @mcp_server.tool
+@monitor_tool
 async def get_all_courses_by_subject_prefix(
     subject_prefix: Annotated[
         str,
@@ -99,6 +169,7 @@ async def get_all_courses_by_subject_prefix(
 
 # DONE
 @mcp_server.tool
+@monitor_tool
 async def search_by_course_title(
     course_title: Annotated[str, "The course title to search. IE 'Computing I'"],
     ctx: Context = CurrentContext(),
@@ -121,6 +192,7 @@ async def search_by_course_title(
 
 
 @mcp_server.tool
+@monitor_tool
 async def get_all_subject_prefixes(ctx: Context = CurrentContext()) -> dict:
     """
     Obtain the exhaustive mapping of subject names to their prefixes
@@ -130,4 +202,5 @@ async def get_all_subject_prefixes(ctx: Context = CurrentContext()) -> dict:
 
 
 if __name__ == "__main__":
-    mcp_server.run(transport="streamable-http", host=BROADCAST_ADDRESS, port=8000)
+    PORT = 8000
+    mcp_server.run(transport="streamable-http", host=BROADCAST_ADDRESS, port=PORT)
