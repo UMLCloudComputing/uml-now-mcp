@@ -29,7 +29,7 @@ from umlnow import (
 BROADCAST_ADDRESS = os.getenv("BROADCAST_ADDRESS", "127.0.0.1")
 
 
-# Proemtheus metrics
+# Prometheus metrics
 TOOL_CALLS_TOTAL = Counter(
     "uml_now_mcp_tool_calls_total",
     "Total number of MCP tool calls for uml-now-mcp",
@@ -77,7 +77,9 @@ def monitor_tool(func):
             raise
         finally:
             duration = time.perf_counter() - start_time
-            TOOL_EXECUTION_TIME.labels(tool_name, status).observe(duration)
+            TOOL_EXECUTION_TIME.labels(tool_name=tool_name, status=status).observe(
+                duration
+            )
             TOOL_CALLS_TOTAL.labels(tool_name=tool_name, status=status).inc()
 
     return async_wrapper if inspect.iscoroutinefunction(func) else sync_wrapper
