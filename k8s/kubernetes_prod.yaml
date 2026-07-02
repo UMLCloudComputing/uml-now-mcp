@@ -10,6 +10,8 @@ kind: Deployment
 metadata:
   name: uml-now-mcp-deployment
   namespace: mcp
+  labels:
+    app: uml-now-mcp
 spec:
   replicas: 3 # Adjust to your needs
   selector: 
@@ -35,6 +37,8 @@ kind: Service
 metadata: 
   name: uml-now-mcp-svc
   namespace: mcp
+  labels:
+    app: uml-now-mcp
 spec:
   selector:
     pod: uml-now-mcp
@@ -47,7 +51,7 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-    - name: http
+    - name: http-metrics
       protocol: TCP
       port: 8000
       targetPort: 8000

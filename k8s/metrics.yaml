@@ -1,0 +1,21 @@
+# Prometheus ServiceMonitor to get application metrics
+apiVersion: v1
+kind: ServiceMonitor
+metadata:
+  name: uml-now-mcp-monitor
+  namespace: mcp
+  labels:
+    app: uml-now-mcp
+spec:
+  namespaceSelector:
+    matchNames: 
+      - mcp
+  selector:
+    matchLabels:
+      app: uml-now-mcp
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+      interval: 5s
+      scrapeInterval: 4s
+
