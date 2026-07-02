@@ -38,6 +38,7 @@ TOOL_CALLS_TOTAL = Counter(
 TOOL_EXECUTION_TIME = Histogram(
     "uml_now_mcp_tool_execution_seconds",
     "Time spent executing an MCP tool in seconds for uml-now-mcp",
+    labelnames=["tool_name", "status"],
     buckets=(0.01, 0.05, 0.1, 0.5, 1.0, 2.5, 5.0, 10.0, float("inf")),
 )
 
